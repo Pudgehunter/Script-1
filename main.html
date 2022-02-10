@@ -1,0 +1,134 @@
+<head>
+</head>
+
+<body>
+    <form id="myForm">
+        <input type="file" id="csvFile" accept=".csv" />
+        <br />
+        <input type="submit" value="Submit" />
+    </form>
+    <button id="nombresId">Nombres</button>
+    <button id="dmiID">DMI</button>
+    <button id="hamburguesasId">Hamburguesas</button>
+
+    <script>
+        let forAllData;
+        let isTrue = false;
+        const myForm = document.getElementById("myForm");
+        const csvFile = document.getElementById("csvFile");
+        myForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const input = csvFile.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const text = e.target.result;
+                const data = csvToArray(text);
+                //console.log(data);
+                forAllData = getData(data);
+                console.log(forAllData);
+                //document.write(JSON.stringify(data));
+            };
+            reader.readAsText(input);
+        });
+
+        function csvToArray(str, delimiter = ",") {
+            const headers = str.slice(0, str.indexOf("\r\n")).split(delimiter);
+            const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+
+            const arr = rows.map(function (row) {
+                const values = row.split(delimiter);
+                const el = headers.reduce(function (object, header, index) {
+                    object[header] = values[index];
+                    return object;
+                }, {});
+                return el;
+            });
+            return arr;
+        }
+
+        function getData(data) {
+            return data;
+        }
+
+        const nombresId = document.getElementById("nombresId");
+        const dmiID = document.getElementById("dmiID");
+        const hamburguesasId = document.getElementById("hamburguesasId");
+
+        nombresId.addEventListener("click", e => {
+            //Para datos de strings
+            isTrue = !isTrue;
+            if (isTrue) {
+                console.log("Nombres: Ascedente");
+                forAllData.sort((a, b) => {
+                    let fa = a.Nombres.toLowerCase(),
+                        fb = b.Nombres.toLowerCase();
+
+                    if (fa < fb) {
+                        return -1;
+                    }
+                    if (fa > fb) {
+                        return 1;
+                    }
+                    return 0;
+                });
+            } else {
+                console.log("Nombres: Descedente");
+                forAllData.sort((a, b) => {
+                    let fa = a.Nombres.toLowerCase(),
+                        fb = b.Nombres.toLowerCase();
+
+                    if (fb < fa) {
+                        return -1;
+                    }
+                    if (fb > fa) {
+                        return 1;
+                    }
+                    return 0;
+                });
+            }
+
+            //console.log(forAllData);
+            forAllData.forEach((e) => {
+                console.log(`${e.Nombres} ${e.DMI} ${e.HAMBURGUESAS}`);
+            });
+        });
+        dmiID.addEventListener("click", e => {
+            isTrue = !isTrue;
+            if (isTrue) {
+                console.log("DMI: Ascedente");
+                forAllData.sort((a, b) => {
+                    return a.DMI - b.DMI;
+                });
+            } else {
+                console.log("DMI: Descedente");
+                forAllData.sort((a, b) => {
+                    return b.DMI - a.DMI;
+                });
+            }
+            forAllData.forEach((e) => {
+                console.log(`${e.Nombres} ${e.DMI} ${e.HAMBURGUESAS}`);
+            });
+        });
+        hamburguesasId.addEventListener("click", e => {
+            isTrue = !isTrue;
+            if (isTrue) {
+                console.log("Las hamburguesas: Ascedente");
+                forAllData.sort((a, b) => {
+                    return a.HAMBURGUESAS - b.HAMBURGUESAS;
+                });
+            } else {
+                console.log("Las hamburguesas: Descedente");
+                forAllData.sort((a, b) => {
+                    return b.HAMBURGUESAS - a.HAMBURGUESAS;
+                });
+            }
+            forAllData.forEach((e) => {
+                console.log(`${e.Nombres} ${e.DMI} ${e.HAMBURGUESAS}`);
+            });
+        });
+    </script>
+
+</body>
+
+</html>
